@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--这是映射文件，编写sql语句-->
+<!--
+        namespace:这是mapper接口的全类名
+        -->
+<mapper namespace="com.hzj.Mapper.BlogTagRelationMapper">
+    <insert id="insertTagBlog">
+        insert into tb_blog_tag_relation (relation_id, blog_id, tag_id,
+        create_time)
+        values (#{relationId}, #{blogId}, #{tagId},
+        #{createTime})
+    </insert>
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT into tb_blog_tag_relation(blog_id,tag_id)
+        VALUES
+        <foreach collection="relationList" item="item" separator=",">
+            (#{item.blogId,jdbcType=BIGINT},#{item.tagId,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hzj.pojo.BlogTagRelation">
+        update tb_blog_tag_relation
+        <set>
+            <if test="blogId != null">
+                blog_id = #{blogId,jdbcType=BIGINT},
+            </if>
+            <if test="tagId != null">
+                tag_id = #{tagId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where relation_id = #{relationId,jdbcType=BIGINT}
+    </update>
+    <delete id="deleteBlogTagRelation" parameterType="com.hzj.pojo.BlogTagRelation">
+        delete from tb_blog_tag_relation
+        where blog_id=#{blogId}
+    </delete>
+
+    <select id="selectAllRelationById" resultType="com.hzj.pojo.BlogTagRelation">
+        select DISTINCT(tag_id) from tb_blog_tag_relation
+        where tag_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

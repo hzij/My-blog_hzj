@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--这是映射文件，编写sql语句-->
+<!--
+        namespace:这是mapper接口的全类名
+        -->
+<mapper namespace="com.hzj.Mapper.AdminUserMapper">
+<!--    <resultMap id="BaseResultMap" type="com.hzj.pojo.AdminUser">-->
+<!--        <id column="admin_user_id" jdbcType="INTEGER" property="adminUserId" />-->
+<!--        <result column="login_user_name" jdbcType="VARCHAR" property="loginUserName" />-->
+<!--        <result column="login_password" jdbcType="VARCHAR" property="loginPassword" />-->
+<!--        <result column="nick_name" jdbcType="VARCHAR" property="nickName" />-->
+<!--        <result column="locked" jdbcType="TINYINT" property="locked" />-->
+<!--    </resultMap>-->
+
+<!--        admin_user_id, login_user_name, login_password, nick_name, locked-->
+
+    <select id="selectLogin" resultType="com.hzj.pojo.AdminUser">
+        select admin_user_id,login_user_name,login_password,nick_name,locked from tb_admin_user  where login_user_name=#{userName} and login_password=#{password} AND locked = 0
+    </select>
+    <select id="selectById" resultType="com.hzj.pojo.AdminUser" >
+        select  admin_user_id,login_user_name,login_password,nick_name,locked
+        from tb_admin_user
+        where admin_user_id=#{userId}
+    </select>
+
+</mapper>

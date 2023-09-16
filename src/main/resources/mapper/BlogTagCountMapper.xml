@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--这是映射文件，编写sql语句-->
+<!--
+        namespace:这是mapper接口的全类名
+        -->
+<mapper namespace="com.hzj.Mapper.BlogTagCountMapper">
+    <resultMap id="BaseResultMap" type="com.hzj.pojo.BlogTag">
+        <id column="tag_id" jdbcType="INTEGER" property="tagId"/>
+        <result column="tag_name" jdbcType="VARCHAR" property="tagName"/>
+        <result column="is_deleted" jdbcType="TINYINT" property="isDeleted"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <resultMap id="BaseCountResultMap" type="com.hzj.pojo.BlogTagCount">
+        <id column="tag_id" jdbcType="INTEGER" property="tagId"/>
+        <result column="tag_count" jdbcType="INTEGER" property="tagCount"/>
+        <result column="tag_name" jdbcType="VARCHAR" property="tagName"/>
+    </resultMap>
+    <select id="getTotalTags" parameterType="Map" resultMap="BaseResultMap">
+        select count(*)  from tb_blog_tag
+        where is_deleted=0
+    </select>
+</mapper>

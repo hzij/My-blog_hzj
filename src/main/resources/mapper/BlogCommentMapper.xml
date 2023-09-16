@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--这是映射文件，编写sql语句-->
+<!--
+        namespace:这是mapper接口的全类名
+        -->
+<mapper namespace="com.hzj.Mapper.BlogCommentMapper">
+    <resultMap id="BaseResultMap" type="com.hzj.pojo.Comment">
+        <id column="comment_id" jdbcType="BIGINT" property="commentId"/>
+        <result column="blog_id" jdbcType="BIGINT" property="blogId"/>
+        <result column="commentator" jdbcType="VARCHAR" property="commentator"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="website_url" jdbcType="VARCHAR" property="websiteUrl"/>
+        <result column="comment_body" jdbcType="VARCHAR" property="commentBody"/>
+        <result column="comment_create_time" jdbcType="TIMESTAMP" property="commentCreateTime"/>
+        <result column="commentator_ip" jdbcType="VARCHAR" property="commentatorIp"/>
+        <result column="reply_body" jdbcType="VARCHAR" property="replyBody"/>
+        <result column="reply_create_time" jdbcType="TIMESTAMP" property="replyCreateTime"/>
+        <result column="comment_status" jdbcType="TINYINT" property="commentStatus"/>
+        <result column="is_deleted" jdbcType="TINYINT" property="isDeleted"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        comment_id, blog_id, commentator, email, website_url, comment_body, comment_create_time,
+        commentator_ip, reply_body, reply_create_time, comment_status, is_deleted
+    </sql>
+    <select id="SelectListComment" parameterType="Map" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from tb_blog_comment
+        where is_deleted=0
+        <if test="blogId!=null">
+            and blog_id=#{blogId}
+        </if>
+        <if test="commentStatus!=null">
+            and comment_status=#{commentStatus}
+        </if>
+        order by blog_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="getCommentTotal" parameterType="Map" resultType="int">
+        select count(*)
+        from tb_blog_comment
+        where is_deleted=0
+        <if test="blogId!=null">
+            and blog_id=#{blogId}
+        </if>
+        <if test="commentStatus!=null">
+            and comment_status=#{commentStatus}
+        </if>
+    </select>
+
+    <update id="updateToExamine">
+        update tb_blog_comment
+        set comment_status=1 where comment_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and comment_status = 0
+    </update>
+
+    <update id="deleteComment">
+        update tb_blog_comment
+        set is_deleted=1 where comment_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <select id="selectCommentById" resultType="com.hzj.pojo.Comment">
+        select <include refid="Base_Column_List"/>
+        from tb_blog_comment
+        where comment_id=#{commentId}
+    </select>
+    <update id="updateComment" parameterType="com.hzj.pojo.Comment">
+        update tb_blog_comment
+        set reply_body=#{replyBody}
+        where comment_id=#{commentId}
+    </update>
+
+</mapper>
